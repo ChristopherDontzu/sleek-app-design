@@ -14,6 +14,7 @@ import { Route as SoferRouteImport } from './routes/sofer'
 import { Route as CerereRouteImport } from './routes/cerere'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 
 const TransportatorRoute = TransportatorRouteImport.update({
   id: '/transportator',
@@ -40,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/cerere': typeof CerereRoute
   '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
+  '/admin/users': typeof AdminUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/cerere': typeof CerereRoute
   '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
+  '/admin/users': typeof AdminUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,27 @@ export interface FileRoutesById {
   '/cerere': typeof CerereRoute
   '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
+  '/admin/users': typeof AdminUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/cerere' | '/sofer' | '/transportator'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/cerere'
+    | '/sofer'
+    | '/transportator'
+    | '/admin/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/cerere' | '/sofer' | '/transportator'
-  id: '__root__' | '/' | '/auth' | '/cerere' | '/sofer' | '/transportator'
+  to: '/' | '/auth' | '/cerere' | '/sofer' | '/transportator' | '/admin/users'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/cerere'
+    | '/sofer'
+    | '/transportator'
+    | '/admin/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +99,7 @@ export interface RootRouteChildren {
   CerereRoute: typeof CerereRoute
   SoferRoute: typeof SoferRoute
   TransportatorRoute: typeof TransportatorRoute
+  AdminUsersRoute: typeof AdminUsersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,7 +155,18 @@ const rootRouteChildren: RootRouteChildren = {
   CerereRoute: CerereRoute,
   SoferRoute: SoferRoute,
   TransportatorRoute: TransportatorRoute,
+  AdminUsersRoute: AdminUsersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
