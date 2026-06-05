@@ -129,11 +129,14 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
     navigate({ to: "/auth" });
   };
 
-  const switchMode = (next: "client" | "transporter") => {
+  const switchMode = (next: "client" | "transporter" | "driver") => {
     if (next === mode) return;
     onOpenChange(false);
-    navigate({ to: next === "transporter" ? "/transportator" : "/" });
-    toast.success(next === "transporter" ? "Mod transportator" : "Mod client");
+    const to = next === "transporter" ? "/transportator" : next === "driver" ? "/sofer" : "/";
+    navigate({ to });
+    toast.success(
+      next === "transporter" ? "Mod transportator" : next === "driver" ? "Mod șofer" : "Mod client"
+    );
   };
 
   return (
