@@ -99,9 +99,12 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { role } = useRole();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const mode: "client" | "transporter" = pathname.startsWith("/transportator")
+  const mode: "client" | "transporter" | "driver" = pathname.startsWith("/transportator")
     ? "transporter"
+    : pathname.startsWith("/sofer")
+    ? "driver"
     : "client";
   const logo = theme === "dark" ? logoBlack : logoColor;
 
