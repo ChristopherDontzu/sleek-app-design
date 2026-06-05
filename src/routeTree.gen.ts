@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TransportatorRouteImport } from './routes/transportator'
+import { Route as SoferRouteImport } from './routes/sofer'
 import { Route as CerereRouteImport } from './routes/cerere'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const TransportatorRoute = TransportatorRouteImport.update({
   id: '/transportator',
   path: '/transportator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SoferRoute = SoferRouteImport.update({
+  id: '/sofer',
+  path: '/sofer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CerereRoute = CerereRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cerere': typeof CerereRoute
+  '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cerere': typeof CerereRoute
+  '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cerere': typeof CerereRoute
+  '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/cerere' | '/transportator'
+  fullPaths: '/' | '/auth' | '/cerere' | '/sofer' | '/transportator'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/cerere' | '/transportator'
-  id: '__root__' | '/' | '/auth' | '/cerere' | '/transportator'
+  to: '/' | '/auth' | '/cerere' | '/sofer' | '/transportator'
+  id: '__root__' | '/' | '/auth' | '/cerere' | '/sofer' | '/transportator'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   CerereRoute: typeof CerereRoute
+  SoferRoute: typeof SoferRoute
   TransportatorRoute: typeof TransportatorRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/transportator'
       fullPath: '/transportator'
       preLoaderRoute: typeof TransportatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sofer': {
+      id: '/sofer'
+      path: '/sofer'
+      fullPath: '/sofer'
+      preLoaderRoute: typeof SoferRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cerere': {
@@ -106,8 +123,19 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   CerereRoute: CerereRoute,
+  SoferRoute: SoferRoute,
   TransportatorRoute: TransportatorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
