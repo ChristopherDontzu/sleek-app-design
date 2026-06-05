@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/hooks/use-auth";
+import { useRole } from "@/hooks/use-role";
 import logoColor from "@/assets/moldingo-logo-color.png";
 import logoBlack from "@/assets/moldingo-logo-black.png";
 
