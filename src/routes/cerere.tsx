@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { auth, db } from "@/integrations/firebase/client";
 import { ThemeProvider } from "@/hooks/use-theme";
 import {
   ArrowLeft,
@@ -116,7 +117,7 @@ function CerereFlow() {
     if (!data.type) return;
     setSubmitting(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = auth.currentUser;
       if (!user) {
         toast.info("Intră în cont ca să trimiți cererea");
         navigate({ to: "/auth", search: { redirect: "/cerere" } });
@@ -124,34 +125,75 @@ function CerereFlow() {
       }
 
       const totalWeight = data.colete.reduce((s, c) => s + c.weightKg, 0);
-      const paxOrWeight =
-        data.type === "colet"
-          ? totalWeight
-          : data.type === "mixt"
-            ? data.adults + data.children
-            : data.adults + data.children;
+      const passengerCount = data.adults + data.children;
 
-      const notesPayload = {
+      // Mapare la schema Firestore existentă (bidRequests)
+      const requestTransportType =
+        data.type === "persoane"
+          ? "people_only"
+          : data.type === "colet"
+            ? "cargo_only"
+            : "people_and_cargo";
+
+      const cargoType = data.type === "persoane" ? null : "other";
+
+      const customerName =
+        user.displayName ?? user.email?.split("@")[0] ?? "Client";
+
+      const title =
+        data.type === "persoane"
+          ? `Persoane • ${data.from.trim()} • ${data.to.trim()}`
+          : data.type === "colet"
+            ? `Colet • ${data.from.trim()} • ${data.to.trim()}`
+            : `Persoane + Colet • ${data.from.trim()} • ${data.to.trim()}`;
+
+      await addDoc(collection(db, "bidRequests"), {
+        customerId: user.uid,
+        customerName,
+        title,
+        status: "pending",
+        requestTransportType,
+        cargoType,
+        // Locații (text liber pentru moment — fără geocoding)
+        fromCity: data.from.trim(),
+        fromCountry: null,
+        toCity: data.to.trim(),
+        toCountry: null,
+        pickupAddress: data.from.trim(),
+        pickupText: data.from.trim(),
+        deliveryAddress: data.to.trim(),
+        // Pasageri
+        passengerEnabled: data.type !== "colet",
+        passengerCount: data.type === "colet" ? 0 : passengerCount,
+        passengerProfile:
+          data.type === "colet"
+            ? null
+            : {
+                adultCount: data.adults,
+                childCount: data.children,
+                withChildren: data.children > 0,
+                withSpecialNeeds: data.specialNeeds,
+                specialNeedsDetails: data.specialNote || null,
+              },
+        withChildren: data.children > 0,
+        withSpecialNeeds: data.specialNeeds,
+        specialNeedsDetails: data.specialNote || null,
+        // Colet
+        weightKg: data.type === "persoane" ? 0 : totalWeight,
+        cargoItems: data.colete,
+        // Preț / observații
+        budgetEur: estimatePrice(data) || null,
+        description: "",
+        // Schedule
+        preferredDate: data.when === "acum" ? new Date().toISOString() : null,
         when: data.when,
-        adults: data.adults,
-        children: data.children,
-        specialNeeds: data.specialNeeds,
-        specialNote: data.specialNote || undefined,
-        colete: data.colete,
-      };
-
-      const { error } = await supabase.from("ride_requests").insert({
-        user_id: user.id,
-        from_address: data.from.trim(),
-        to_address: data.to.trim(),
-        category: data.type,
-        depart_at: null,
-        pax_or_weight: paxOrWeight,
-        price_proposal: estimatePrice(data),
-        notes: JSON.stringify(notesPayload),
+        // Metadata
+        createdAt: serverTimestamp(),
+        offersCount: 0,
+        viewsCount: 0,
+        targetCarrierId: null,
+        targetCarrierName: null,
       });
-
-      if (error) throw error;
 
       toast.success("Cererea a fost trimisă șoferilor!");
       navigate({ to: "/" });

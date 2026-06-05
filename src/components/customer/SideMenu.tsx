@@ -100,7 +100,7 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
   const logo = theme === "dark" ? logoBlack : logoColor;
 
   const displayName =
-    (user?.user_metadata?.full_name as string | undefined) ??
+    user?.displayName ??
     user?.email?.split("@")[0] ??
     "Oaspete";
   const initials = displayName

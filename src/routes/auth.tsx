@@ -3,9 +3,14 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, Mail, Lock } from "lucide-react";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { ThemeProvider } from "@/hooks/use-theme";
-import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
+import { auth, googleProvider } from "@/integrations/firebase/client";
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
@@ -32,6 +37,29 @@ const credentialsSchema = z.object({
   password: z.string().min(6, "Minim 6 caractere").max(72),
 });
 
+function mapFirebaseError(code: string): string {
+  switch (code) {
+    case "auth/invalid-credential":
+    case "auth/wrong-password":
+    case "auth/user-not-found":
+      return "Email sau parolă greșită";
+    case "auth/email-already-in-use":
+      return "Există deja un cont cu acest email";
+    case "auth/weak-password":
+      return "Parolă prea slabă (minim 6 caractere)";
+    case "auth/invalid-email":
+      return "Email invalid";
+    case "auth/popup-closed-by-user":
+      return "Ai închis fereastra Google";
+    case "auth/unauthorized-domain":
+      return "Domeniu neautorizat în Firebase Console";
+    case "auth/network-request-failed":
+      return "Probleme de rețea";
+    default:
+      return "Eroare la autentificare";
+  }
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const { redirect } = useSearch({ from: "/auth" });
@@ -43,11 +71,10 @@ function AuthPage() {
 
   // Dacă e deja logat → redirect
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        navigate({ to: redirect ?? "/", replace: true });
-      }
+    const unsub = onAuthStateChanged(auth, (u) => {
+      if (u) navigate({ to: redirect ?? "/", replace: true });
     });
+    return () => unsub();
   }, [navigate, redirect]);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
@@ -61,25 +88,16 @@ function AuthPage() {
     setLoading(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email: parsed.data.email,
-          password: parsed.data.password,
-          options: { emailRedirectTo: `${window.location.origin}/` },
-        });
-        if (error) throw error;
-        toast.success("Cont creat. Te-am logat automat.");
+        await createUserWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
+        toast.success("Cont creat. Bun venit!");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: parsed.data.email,
-          password: parsed.data.password,
-        });
-        if (error) throw error;
+        await signInWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
         toast.success("Bun venit înapoi!");
       }
       navigate({ to: redirect ?? "/", replace: true });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Eroare la autentificare";
-      toast.error(msg);
+      const code = (err as { code?: string })?.code ?? "";
+      toast.error(mapFirebaseError(code));
     } finally {
       setLoading(false);
     }
@@ -88,18 +106,13 @@ function AuthPage() {
   const handleGoogle = async () => {
     setOauthLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
-      });
-      if (result.error) {
-        toast.error("Nu am putut conecta Google");
-        setOauthLoading(false);
-        return;
-      }
-      if (result.redirected) return; // browser redirects
+      await signInWithPopup(auth, googleProvider);
+      toast.success("Conectat cu Google");
       navigate({ to: redirect ?? "/", replace: true });
-    } catch {
-      toast.error("Eroare neașteptată");
+    } catch (err) {
+      const code = (err as { code?: string })?.code ?? "";
+      toast.error(mapFirebaseError(code));
+    } finally {
       setOauthLoading(false);
     }
   };
@@ -128,7 +141,6 @@ function AuthPage() {
             : "Creează un cont ca să postezi cereri de transport."}
         </p>
 
-        {/* Google */}
         <button
           type="button"
           onClick={handleGoogle}
@@ -149,7 +161,6 @@ function AuthPage() {
           <div className="h-px flex-1 bg-border" />
         </div>
 
-        {/* Email form */}
         <form onSubmit={handleEmailSubmit} className="space-y-3">
           <div className="flex items-center gap-2 rounded-xl bg-muted/60 px-3 py-3 border border-transparent focus-within:border-primary transition">
             <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
