@@ -9,8 +9,30 @@ import {
   signInWithPopup,
   onAuthStateChanged,
 } from "firebase/auth";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { ThemeProvider } from "@/hooks/use-theme";
-import { auth, googleProvider } from "@/integrations/firebase/client";
+import { auth, db, googleProvider } from "@/integrations/firebase/client";
+import type { AppRole } from "@/hooks/use-role";
+import { homeForRole } from "@/hooks/use-role";
+
+async function fetchOrCreateRole(uid: string, email: string | null, displayName: string | null): Promise<AppRole> {
+  const ref = doc(db, "users", uid);
+  const snap = await getDoc(ref);
+  if (snap.exists()) {
+    const data = snap.data() as { role?: AppRole };
+    if (data.role === "driver" || data.role === "transporter" || data.role === "customer") {
+      return data.role;
+    }
+  } else {
+    await setDoc(ref, {
+      role: "customer",
+      email: email ?? null,
+      displayName: displayName ?? null,
+      createdAt: serverTimestamp(),
+    });
+  }
+  return "customer";
+}
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
