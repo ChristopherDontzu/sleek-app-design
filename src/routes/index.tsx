@@ -1,29 +1,36 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ThemeProvider } from "@/hooks/use-theme";
+import { MapView } from "@/components/customer/MapView";
+import { TopBar } from "@/components/customer/TopBar";
+import { BottomSheet } from "@/components/customer/BottomSheet";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Moldingo — Transport rapid în Moldova" },
+      {
+        name: "description",
+        content: "Comandă o cursă în câteva secunde. Șoferi verificați, prețuri corecte, oriunde în Moldova.",
+      },
+      { property: "og:title", content: "Moldingo — Transport rapid în Moldova" },
+      {
+        property: "og:description",
+        content: "Comandă o cursă în câteva secunde. Șoferi verificați, prețuri corecte.",
+      },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
     ],
   }),
-  component: Index,
+  component: CustomerHome,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function CustomerHome() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <ThemeProvider>
+      <main className="relative h-screen w-screen overflow-hidden bg-background">
+        <MapView />
+        <TopBar />
+        <BottomSheet />
+      </main>
+    </ThemeProvider>
   );
 }
