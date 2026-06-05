@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ThemeProvider } from "@/hooks/use-theme";
 import { MapView } from "@/components/customer/MapView";
 import { TopBar } from "@/components/customer/TopBar";
 import { Map as MapIcon, List, Calendar, Users, Truck, Home, Briefcase, GitFork, MessageSquare, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRole, homeForRole } from "@/hooks/use-role";
 
 export const Route = createFileRoute("/transportator")({
   head: () => ({
