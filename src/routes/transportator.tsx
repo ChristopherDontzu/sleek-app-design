@@ -64,11 +64,20 @@ function applyFilter(items: Request[], f: FilterId): Request[] {
 }
 
 function TransporterHome() {
+  const navigate = useNavigate();
+  const { role, loading: roleLoading } = useRole();
   const [filter, setFilter] = useState<FilterId>("pentru-mine");
   const [view, setView] = useState<ViewMode>(() => {
     if (typeof window === "undefined") return "map";
     return (localStorage.getItem("moldingo:transporter:view") as ViewMode) || "map";
   });
+
+  useEffect(() => {
+    if (roleLoading) return;
+    if (role === "driver") {
+      navigate({ to: homeForRole(role), replace: true });
+    }
+  }, [role, roleLoading, navigate]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
