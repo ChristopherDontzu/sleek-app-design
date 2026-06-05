@@ -185,9 +185,17 @@ function CerereFlow() {
 
       <Footer
         step={step}
-        canNext={canNext}
+        canNext={canNext && !submitting}
         onNext={next}
-        label={step === 4 ? "Trimite cererea" : step === 3 ? "Continuă" : "Mai departe"}
+        label={
+          step === 4
+            ? submitting
+              ? "Se trimite…"
+              : "Trimite cererea"
+            : step === 3
+              ? "Continuă"
+              : "Mai departe"
+        }
       />
     </main>
   );
