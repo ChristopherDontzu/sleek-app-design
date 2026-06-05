@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { Home, Search, Plus, MessageCircle, User } from "lucide-react";
 
 const TABS = ["Persoane", "Colet", "Mare", "Oferte"] as const;
