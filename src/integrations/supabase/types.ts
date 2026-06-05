@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ride_requests: {
+        Row: {
+          category: Database["public"]["Enums"]["ride_category"]
+          created_at: string
+          depart_at: string | null
+          from_address: string
+          id: string
+          notes: string | null
+          pax_or_weight: number | null
+          price_proposal: number | null
+          status: Database["public"]["Enums"]["ride_status"]
+          to_address: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: Database["public"]["Enums"]["ride_category"]
+          created_at?: string
+          depart_at?: string | null
+          from_address: string
+          id?: string
+          notes?: string | null
+          pax_or_weight?: number | null
+          price_proposal?: number | null
+          status?: Database["public"]["Enums"]["ride_status"]
+          to_address: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["ride_category"]
+          created_at?: string
+          depart_at?: string | null
+          from_address?: string
+          id?: string
+          notes?: string | null
+          pax_or_weight?: number | null
+          price_proposal?: number | null
+          status?: Database["public"]["Enums"]["ride_status"]
+          to_address?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +67,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      ride_category: "persoane" | "colet" | "mare" | "oferte"
+      ride_status: "pending" | "accepted" | "cancelled" | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +195,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      ride_category: ["persoane", "colet", "mare", "oferte"],
+      ride_status: ["pending", "accepted", "cancelled", "completed"],
+    },
   },
 } as const
