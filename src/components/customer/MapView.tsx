@@ -19,13 +19,16 @@ interface MapViewProps {
   className?: string;
 }
 
+// Răspândite pe teritoriul Moldovei (orașe reale) ca demo să nu pară "în linie" la zoom mic.
 const DEMO_DRIVERS: DriverMarker[] = [
-  { id: "d1", lng: 28.8253, lat: 47.0205 },
-  { id: "d2", lng: 28.8453, lat: 47.0055 },
-  { id: "d3", lng: 28.8553, lat: 47.0155 },
-  { id: "d4", lng: 28.8153, lat: 47.0005 },
-  { id: "d5", lng: 28.8403, lat: 47.0255 },
-  { id: "d6", lng: 28.8253, lat: 46.9955 },
+  { id: "chisinau", lng: 28.8353, lat: 47.0105 },
+  { id: "balti",    lng: 27.9293, lat: 47.7615 },
+  { id: "cahul",    lng: 28.1908, lat: 45.9078 },
+  { id: "ungheni",  lng: 27.7956, lat: 47.2089 },
+  { id: "orhei",    lng: 28.8242, lat: 47.3833 },
+  { id: "comrat",   lng: 28.6589, lat: 46.2983 },
+  { id: "soroca",   lng: 28.2989, lat: 48.1547 },
+  { id: "tiraspol", lng: 29.6433, lat: 46.8403 },
 ];
 
 export function MapView({
