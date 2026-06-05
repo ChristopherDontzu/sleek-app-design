@@ -52,22 +52,23 @@
 :root {
   --radius: 0.875rem;
 
-  --background: oklch(0.985 0.003 95);
-  --foreground: oklch(0.18 0.025 235);
+  /* Warm, airy light surface — feels like premium iOS map apps */
+  --background: oklch(0.985 0.006 85);
+  --foreground: oklch(0.2 0.025 250);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.025 235);
+  --card-foreground: oklch(0.18 0.025 245);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.025 235);
+  --popover-foreground: oklch(0.18 0.025 245);
 
-  --primary: oklch(0.62 0.14 195);
+  --primary: oklch(0.6 0.15 195);
   --primary-foreground: oklch(0.99 0 0);
   --primary-glow: oklch(0.74 0.13 195);
 
-  --secondary: oklch(0.96 0.008 230);
-  --secondary-foreground: oklch(0.22 0.03 235);
+  --secondary: oklch(0.955 0.01 230);
+  --secondary-foreground: oklch(0.22 0.03 245);
 
-  --muted: oklch(0.96 0.008 230);
-  --muted-foreground: oklch(0.5 0.025 240);
+  --muted: oklch(0.95 0.008 230);
+  --muted-foreground: oklch(0.48 0.02 240);
 
   --accent: oklch(0.78 0.16 75);
   --accent-foreground: oklch(0.2 0.04 60);
@@ -75,9 +76,9 @@
   --destructive: oklch(0.6 0.22 27);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.92 0.008 240);
+  --border: oklch(0.9 0.01 240);
   --input: oklch(0.92 0.008 240);
-  --ring: oklch(0.62 0.14 195);
+  --ring: oklch(0.6 0.15 195);
 
   --chart-1: oklch(0.62 0.14 195);
   --chart-2: oklch(0.78 0.16 75);
@@ -85,20 +86,21 @@
   --chart-4: oklch(0.7 0.18 145);
   --chart-5: oklch(0.65 0.2 25);
 
-  --sidebar: oklch(0.985 0.003 95);
-  --sidebar-foreground: oklch(0.18 0.025 235);
-  --sidebar-primary: oklch(0.62 0.14 195);
+  --sidebar: oklch(0.985 0.006 85);
+  --sidebar-foreground: oklch(0.2 0.025 250);
+  --sidebar-primary: oklch(0.6 0.15 195);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.96 0.008 230);
-  --sidebar-accent-foreground: oklch(0.22 0.03 235);
-  --sidebar-border: oklch(0.92 0.008 240);
-  --sidebar-ring: oklch(0.62 0.14 195);
+  --sidebar-accent: oklch(0.95 0.008 230);
+  --sidebar-accent-foreground: oklch(0.22 0.03 245);
+  --sidebar-border: oklch(0.9 0.01 240);
+  --sidebar-ring: oklch(0.6 0.15 195);
 
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
-  --shadow-elegant: 0 10px 30px -10px color-mix(in oklab, var(--primary) 25%, transparent);
-  --shadow-card: 0 2px 16px -4px color-mix(in oklab, var(--foreground) 10%, transparent);
-  --shadow-sheet: 0 -8px 32px -8px color-mix(in oklab, var(--foreground) 20%, transparent);
+  --shadow-elegant: 0 12px 32px -12px color-mix(in oklab, var(--primary) 35%, transparent);
+  --shadow-card: 0 4px 20px -6px color-mix(in oklab, var(--foreground) 14%, transparent);
+  --shadow-sheet: 0 -12px 40px -10px color-mix(in oklab, var(--foreground) 18%, transparent);
 }
+
 
 .dark {
   --background: oklch(0.16 0.018 245);
