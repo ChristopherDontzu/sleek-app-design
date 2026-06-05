@@ -65,6 +65,7 @@ export function BottomSheet() {
         {/* CTA */}
         <button
           type="button"
+          onClick={goCerere}
           className="w-full rounded-2xl bg-foreground text-background py-3.5 text-sm font-semibold shadow-[var(--shadow-elegant)] cursor-pointer hover:opacity-90 transition"
         >
           Cere transport
@@ -78,8 +79,9 @@ export function BottomSheet() {
           <NavBtn icon={Search} />
           <button
             type="button"
+            onClick={goCerere}
             className="-mt-6 h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-[var(--shadow-elegant)] cursor-pointer hover:opacity-90 transition"
-            aria-label="Adaugă"
+            aria-label="Postează cerere"
           >
             <Plus className="h-5 w-5" />
           </button>
