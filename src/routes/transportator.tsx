@@ -84,7 +84,7 @@ function TransporterHome() {
 
         {/* Filter chips */}
         <div className="absolute left-0 right-0 top-[64px] z-10 px-3">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+          <div className="flex gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {FILTERS.map((f) => (
               <button
                 key={f.id}
