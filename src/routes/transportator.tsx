@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ThemeProvider } from "@/hooks/use-theme";
 import { MapView } from "@/components/customer/MapView";
 import { TopBar } from "@/components/customer/TopBar";
-import { Map as MapIcon, List, Calendar, Users, Truck } from "lucide-react";
+import { Map as MapIcon, List, Calendar, Users, Truck, Home, Briefcase, GitFork, MessageSquare, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/transportator")({
@@ -84,7 +84,7 @@ function TransporterHome() {
 
         {/* Filter chips */}
         <div className="absolute left-0 right-0 top-[64px] z-10 px-3">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+          <div className="flex gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {FILTERS.map((f) => (
               <button
                 key={f.id}
@@ -156,22 +156,26 @@ function TransporterHome() {
         {/* Bottom nav */}
         <nav className="absolute bottom-0 left-0 right-0 z-10 grid grid-cols-5 border-t border-border bg-card/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]">
           {[
-            { label: "Acasă", active: true },
-            { label: "Cursele mele" },
-            { label: "Rutele mele" },
-            { label: "Mesaje" },
-            { label: "Mai multe" },
-          ].map((t) => (
-            <button
-              key={t.label}
-              className={cn(
-                "py-3 text-xs font-medium",
-                t.active ? "text-primary" : "text-muted-foreground"
-              )}
-            >
-              {t.label}
-            </button>
-          ))}
+            { label: "Acasă", icon: Home, active: true },
+            { label: "Cursele mele", icon: Briefcase },
+            { label: "Rutele mele", icon: GitFork },
+            { label: "Mesaje", icon: MessageSquare },
+            { label: "Mai multe", icon: MoreHorizontal },
+          ].map((t) => {
+            const Icon = t.icon;
+            return (
+              <button
+                key={t.label}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium leading-tight",
+                  t.active ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                <Icon className="h-5 w-5" />
+                <span className="truncate">{t.label}</span>
+              </button>
+            );
+          })}
         </nav>
       </main>
     </ThemeProvider>
