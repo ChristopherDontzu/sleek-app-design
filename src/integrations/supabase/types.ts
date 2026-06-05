@@ -67,7 +67,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      ride_category: "persoane" | "colet" | "mare" | "oferte"
+      ride_category: "persoane" | "colet" | "mare" | "oferte" | "mixt"
       ride_status: "pending" | "accepted" | "cancelled" | "completed"
     }
     CompositeTypes: {
@@ -196,7 +196,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      ride_category: ["persoane", "colet", "mare", "oferte"],
+      ride_category: ["persoane", "colet", "mare", "oferte", "mixt"],
       ride_status: ["pending", "accepted", "cancelled", "completed"],
     },
   },

@@ -1,0 +1,1 @@
+ALTER TYPE public.ride_category ADD VALUE IF NOT EXISTS 'mixt';
