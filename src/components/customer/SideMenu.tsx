@@ -12,9 +12,13 @@ import {
   LogOut,
   ChevronRight,
   Star,
+  LogIn,
 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
+import { useAuth } from "@/hooks/use-auth";
 import logoColor from "@/assets/moldingo-logo-color.png";
 import logoBlack from "@/assets/moldingo-logo-black.png";
 
@@ -54,7 +58,7 @@ function Row({ item }: { item: Item }) {
   return (
     <button
       type="button"
-      className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition active:scale-[0.98] hover:bg-muted/60"
+      className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition active:scale-[0.98] hover:bg-muted/60 cursor-pointer"
     >
       <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground">
         <Icon className="h-[18px] w-[18px]" />
@@ -91,7 +95,30 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export function SideMenu({ open, onOpenChange }: SideMenuProps) {
   const { theme } = useTheme();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const logo = theme === "dark" ? logoBlack : logoColor;
+
+  const displayName =
+    (user?.user_metadata?.full_name as string | undefined) ??
+    user?.email?.split("@")[0] ??
+    "Oaspete";
+  const initials = displayName
+    .split(/[\s.]+/)
+    .slice(0, 2)
+    .map((s) => s[0]?.toUpperCase() ?? "")
+    .join("") || "M";
+
+  const handleLogout = async () => {
+    await signOut();
+    onOpenChange(false);
+    toast.success("Te-ai deconectat");
+  };
+
+  const handleLogin = () => {
+    onOpenChange(false);
+    navigate({ to: "/auth" });
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -101,39 +128,62 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
       >
         {/* Header: profile card */}
         <div className="px-4 pt-6 pb-4 bg-gradient-to-br from-primary/15 via-background to-background border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="h-14 w-14 rounded-full bg-card border border-border flex items-center justify-center text-lg font-semibold text-foreground shadow-[var(--shadow-card)]">
-                IU
+          {user ? (
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div className="h-14 w-14 rounded-full bg-card border border-border flex items-center justify-center text-lg font-semibold text-foreground shadow-[var(--shadow-card)]">
+                  {initials}
+                </div>
+                <span className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-accent border-2 border-background" />
               </div>
-              <span className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-accent border-2 border-background" />
+              <div className="flex-1 min-w-0">
+                <div className="text-base font-semibold text-foreground truncate">
+                  {displayName}
+                </div>
+                <div className="text-xs text-muted-foreground truncate">
+                  {user.email}
+                </div>
+                <div className="mt-1 flex items-center gap-1 text-xs text-foreground">
+                  <Star className="h-3 w-3 fill-accent text-accent" />
+                  <span className="font-medium">5.00</span>
+                  <span className="text-muted-foreground">· cont nou</span>
+                </div>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-base font-semibold text-foreground truncate">
-                Ion Utilizator
-              </div>
-              <div className="text-xs text-muted-foreground truncate">
-                +373 •• ••• •••
-              </div>
-              <div className="mt-1 flex items-center gap-1 text-xs text-foreground">
-                <Star className="h-3 w-3 fill-accent text-accent" />
-                <span className="font-medium">4.92</span>
-                <span className="text-muted-foreground">· 28 curse</span>
-              </div>
-            </div>
-          </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handleLogin}
+              className="w-full flex items-center gap-3 rounded-2xl bg-card border border-border p-3 cursor-pointer hover:bg-muted/40 transition"
+            >
+              <span className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <LogIn className="h-5 w-5" />
+              </span>
+              <span className="flex-1 text-left">
+                <span className="block text-sm font-semibold text-foreground">
+                  Intră în cont
+                </span>
+                <span className="block text-xs text-muted-foreground">
+                  Postează cereri și urmărește cursele
+                </span>
+              </span>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </button>
+          )}
 
           {/* Quick stats */}
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <div className="rounded-2xl bg-card/80 backdrop-blur border border-border px-3 py-2">
-              <div className="text-[11px] text-muted-foreground">Portofel</div>
-              <div className="text-sm font-semibold text-foreground">0 MDL</div>
+          {user && (
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <div className="rounded-2xl bg-card/80 backdrop-blur border border-border px-3 py-2">
+                <div className="text-[11px] text-muted-foreground">Portofel</div>
+                <div className="text-sm font-semibold text-foreground">0 MDL</div>
+              </div>
+              <div className="rounded-2xl bg-card/80 backdrop-blur border border-border px-3 py-2">
+                <div className="text-[11px] text-muted-foreground">Bonusuri</div>
+                <div className="text-sm font-semibold text-foreground">0 pct</div>
+              </div>
             </div>
-            <div className="rounded-2xl bg-card/80 backdrop-blur border border-border px-3 py-2">
-              <div className="text-[11px] text-muted-foreground">Bonusuri</div>
-              <div className="text-sm font-semibold text-foreground">120 pct</div>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Scrollable list */}
@@ -163,7 +213,7 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
           <div className="px-4 pt-4">
             <button
               type="button"
-              className="w-full flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)] active:scale-[0.98] transition"
+              className="w-full flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)] active:scale-[0.98] transition cursor-pointer"
             >
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 backdrop-blur">
                 <Car className="h-5 w-5" />
@@ -192,13 +242,16 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
               <div className="text-[10px] text-muted-foreground">v0.1.0</div>
             </div>
           </div>
-          <button
-            type="button"
-            className="flex items-center gap-1.5 text-xs font-medium text-destructive px-2.5 py-1.5 rounded-lg hover:bg-destructive/10 transition"
-          >
-            <LogOut className="h-3.5 w-3.5" />
-            Ieși
-          </button>
+          {user && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 text-xs font-medium text-destructive px-2.5 py-1.5 rounded-lg hover:bg-destructive/10 transition cursor-pointer"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              Ieși
+            </button>
+          )}
         </div>
       </SheetContent>
     </Sheet>
