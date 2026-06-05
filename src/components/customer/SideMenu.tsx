@@ -14,7 +14,8 @@ import {
   Star,
   LogIn,
 } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { Truck, Home } from "lucide-react";
 import { toast } from "sonner";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
@@ -97,6 +98,10 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const mode: "client" | "transporter" = pathname.startsWith("/transportator")
+    ? "transporter"
+    : "client";
   const logo = theme === "dark" ? logoBlack : logoColor;
 
   const displayName =
@@ -118,6 +123,13 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
   const handleLogin = () => {
     onOpenChange(false);
     navigate({ to: "/auth" });
+  };
+
+  const switchMode = (next: "client" | "transporter") => {
+    if (next === mode) return;
+    onOpenChange(false);
+    navigate({ to: next === "transporter" ? "/transportator" : "/" });
+    toast.success(next === "transporter" ? "Mod transportator" : "Mod client");
   };
 
   return (
@@ -188,6 +200,34 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
 
         {/* Scrollable list */}
         <div className="flex-1 overflow-y-auto pb-4">
+          {/* Mode switch: Client ↔ Transportator (dev) */}
+          <div className="px-4 pt-4">
+            <div className="inline-flex w-full rounded-2xl bg-muted p-1 border border-border">
+              <button
+                type="button"
+                onClick={() => switchMode("client")}
+                className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition ${
+                  mode === "client"
+                    ? "bg-card text-foreground shadow-[var(--shadow-card)]"
+                    : "text-muted-foreground"
+                }`}
+              >
+                <Home className="h-4 w-4" /> Client
+              </button>
+              <button
+                type="button"
+                onClick={() => switchMode("transporter")}
+                className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition ${
+                  mode === "transporter"
+                    ? "bg-card text-foreground shadow-[var(--shadow-card)]"
+                    : "text-muted-foreground"
+                }`}
+              >
+                <Truck className="h-4 w-4" /> Transportator
+              </button>
+            </div>
+          </div>
+
           <SectionLabel>Cont</SectionLabel>
           <div className="px-2 space-y-0.5">
             {personal.map((i) => (
