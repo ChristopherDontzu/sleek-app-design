@@ -200,6 +200,34 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
 
         {/* Scrollable list */}
         <div className="flex-1 overflow-y-auto pb-4">
+          {/* Mode switch: Client ↔ Transportator (dev) */}
+          <div className="px-4 pt-4">
+            <div className="inline-flex w-full rounded-2xl bg-muted p-1 border border-border">
+              <button
+                type="button"
+                onClick={() => switchMode("client")}
+                className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition ${
+                  mode === "client"
+                    ? "bg-card text-foreground shadow-[var(--shadow-card)]"
+                    : "text-muted-foreground"
+                }`}
+              >
+                <Home className="h-4 w-4" /> Client
+              </button>
+              <button
+                type="button"
+                onClick={() => switchMode("transporter")}
+                className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition ${
+                  mode === "transporter"
+                    ? "bg-card text-foreground shadow-[var(--shadow-card)]"
+                    : "text-muted-foreground"
+                }`}
+              >
+                <Truck className="h-4 w-4" /> Transportator
+              </button>
+            </div>
+          </div>
+
           <SectionLabel>Cont</SectionLabel>
           <div className="px-2 space-y-0.5">
             {personal.map((i) => (
