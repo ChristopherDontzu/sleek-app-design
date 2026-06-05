@@ -1,29 +1,21 @@
 import { useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import { onAuthStateChanged, signOut as fbSignOut, type User } from "firebase/auth";
+import { auth } from "@/integrations/firebase/client";
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(auth.currentUser);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Initial fetch
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u);
       setLoading(false);
     });
-
-    // Subscribe to changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    return () => unsub();
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    await fbSignOut(auth);
   };
 
   return { user, loading, signOut };
