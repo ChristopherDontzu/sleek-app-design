@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ThemeProvider } from "@/hooks/use-theme";
 import { MapView } from "@/components/customer/MapView";
 import { TopBar } from "@/components/customer/TopBar";
-import { Map as MapIcon, List, Calendar, Users, Truck } from "lucide-react";
+import { Map as MapIcon, List, Calendar, Users, Truck, Home, Briefcase, GitFork, MessageSquare, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/transportator")({
