@@ -98,6 +98,10 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const mode: "client" | "transporter" = pathname.startsWith("/transportator")
+    ? "transporter"
+    : "client";
   const logo = theme === "dark" ? logoBlack : logoColor;
 
   const displayName =
@@ -119,6 +123,13 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
   const handleLogin = () => {
     onOpenChange(false);
     navigate({ to: "/auth" });
+  };
+
+  const switchMode = (next: "client" | "transporter") => {
+    if (next === mode) return;
+    onOpenChange(false);
+    navigate({ to: next === "transporter" ? "/transportator" : "/" });
+    toast.success(next === "transporter" ? "Mod transportator" : "Mod client");
   };
 
   return (
