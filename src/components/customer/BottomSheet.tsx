@@ -5,9 +5,11 @@ import { Home, Search, Plus, MessageCircle, User } from "lucide-react";
 const TABS = ["Persoane", "Colet", "Mare", "Oferte"] as const;
 
 export function BottomSheet() {
+  const navigate = useNavigate();
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [tab, setTab] = useState<(typeof TABS)[number]>("Persoane");
+  const goCerere = () => navigate({ to: "/cerere" });
 
   return (
     <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col">
