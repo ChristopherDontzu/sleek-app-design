@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/hooks/use-auth";
+import { useRole } from "@/hooks/use-role";
 import logoColor from "@/assets/moldingo-logo-color.png";
 import logoBlack from "@/assets/moldingo-logo-black.png";
 
@@ -98,9 +99,12 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { role } = useRole();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const mode: "client" | "transporter" = pathname.startsWith("/transportator")
+  const mode: "client" | "transporter" | "driver" = pathname.startsWith("/transportator")
     ? "transporter"
+    : pathname.startsWith("/sofer")
+    ? "driver"
     : "client";
   const logo = theme === "dark" ? logoBlack : logoColor;
 
@@ -125,11 +129,14 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
     navigate({ to: "/auth" });
   };
 
-  const switchMode = (next: "client" | "transporter") => {
+  const switchMode = (next: "client" | "transporter" | "driver") => {
     if (next === mode) return;
     onOpenChange(false);
-    navigate({ to: next === "transporter" ? "/transportator" : "/" });
-    toast.success(next === "transporter" ? "Mod transportator" : "Mod client");
+    const to = next === "transporter" ? "/transportator" : next === "driver" ? "/sofer" : "/";
+    navigate({ to });
+    toast.success(
+      next === "transporter" ? "Mod transportator" : next === "driver" ? "Mod șofer" : "Mod client"
+    );
   };
 
   return (
@@ -206,7 +213,7 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
               <button
                 type="button"
                 onClick={() => switchMode("client")}
-                className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition ${
+                className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-medium transition ${
                   mode === "client"
                     ? "bg-card text-foreground shadow-[var(--shadow-card)]"
                     : "text-muted-foreground"
@@ -217,15 +224,34 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
               <button
                 type="button"
                 onClick={() => switchMode("transporter")}
-                className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition ${
+                className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-medium transition ${
                   mode === "transporter"
                     ? "bg-card text-foreground shadow-[var(--shadow-card)]"
                     : "text-muted-foreground"
                 }`}
               >
-                <Truck className="h-4 w-4" /> Transportator
+                <Truck className="h-4 w-4" /> Transport.
+              </button>
+              <button
+                type="button"
+                onClick={() => switchMode("driver")}
+                className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-medium transition ${
+                  mode === "driver"
+                    ? "bg-card text-foreground shadow-[var(--shadow-card)]"
+                    : "text-muted-foreground"
+                }`}
+              >
+                <Truck className="h-4 w-4" /> Șofer
               </button>
             </div>
+            {role && (
+              <div className="mt-2 text-[11px] text-muted-foreground px-1">
+                Rol cont:{" "}
+                <span className="font-semibold text-foreground">
+                  {role === "driver" ? "Șofer" : role === "transporter" ? "Transportator" : "Client"}
+                </span>
+              </div>
+            )}
           </div>
 
           <SectionLabel>Cont</SectionLabel>

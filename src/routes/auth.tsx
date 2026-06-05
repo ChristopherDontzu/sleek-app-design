@@ -9,8 +9,30 @@ import {
   signInWithPopup,
   onAuthStateChanged,
 } from "firebase/auth";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { ThemeProvider } from "@/hooks/use-theme";
-import { auth, googleProvider } from "@/integrations/firebase/client";
+import { auth, db, googleProvider } from "@/integrations/firebase/client";
+import type { AppRole } from "@/hooks/use-role";
+import { homeForRole } from "@/hooks/use-role";
+
+async function fetchOrCreateRole(uid: string, email: string | null, displayName: string | null): Promise<AppRole> {
+  const ref = doc(db, "users", uid);
+  const snap = await getDoc(ref);
+  if (snap.exists()) {
+    const data = snap.data() as { role?: AppRole };
+    if (data.role === "driver" || data.role === "transporter" || data.role === "customer") {
+      return data.role;
+    }
+  } else {
+    await setDoc(ref, {
+      role: "customer",
+      email: email ?? null,
+      displayName: displayName ?? null,
+      createdAt: serverTimestamp(),
+    });
+  }
+  return "customer";
+}
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
@@ -69,10 +91,12 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState(false);
 
-  // Dacă e deja logat → redirect
+  // Dacă e deja logat → redirect după rol
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      if (u) navigate({ to: redirect ?? "/", replace: true });
+    const unsub = onAuthStateChanged(auth, async (u) => {
+      if (!u) return;
+      const r = await fetchOrCreateRole(u.uid, u.email, u.displayName);
+      navigate({ to: redirect ?? homeForRole(r), replace: true });
     });
     return () => unsub();
   }, [navigate, redirect]);
@@ -87,14 +111,20 @@ function AuthPage() {
 
     setLoading(true);
     try {
+      let uid: string;
+      let userEmail: string | null;
+      let displayName: string | null;
       if (mode === "signup") {
-        await createUserWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
+        const cred = await createUserWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
+        uid = cred.user.uid; userEmail = cred.user.email; displayName = cred.user.displayName;
         toast.success("Cont creat. Bun venit!");
       } else {
-        await signInWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
+        const cred = await signInWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
+        uid = cred.user.uid; userEmail = cred.user.email; displayName = cred.user.displayName;
         toast.success("Bun venit înapoi!");
       }
-      navigate({ to: redirect ?? "/", replace: true });
+      const r = await fetchOrCreateRole(uid, userEmail, displayName);
+      navigate({ to: redirect ?? homeForRole(r), replace: true });
     } catch (err) {
       const code = (err as { code?: string })?.code ?? "";
       toast.error(mapFirebaseError(code));
@@ -106,9 +136,10 @@ function AuthPage() {
   const handleGoogle = async () => {
     setOauthLoading(true);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const cred = await signInWithPopup(auth, googleProvider);
+      const r = await fetchOrCreateRole(cred.user.uid, cred.user.email, cred.user.displayName);
       toast.success("Conectat cu Google");
-      navigate({ to: redirect ?? "/", replace: true });
+      navigate({ to: redirect ?? homeForRole(r), replace: true });
     } catch (err) {
       const code = (err as { code?: string })?.code ?? "";
       toast.error(mapFirebaseError(code));
