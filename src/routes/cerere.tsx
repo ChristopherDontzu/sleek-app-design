@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { ThemeProvider } from "@/hooks/use-theme";
 import {
   ArrowLeft,
@@ -84,6 +86,7 @@ const SIZE_META: Record<ColetSize, { label: string; hint: string }> = {
 function CerereFlow() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
   const [data, setData] = useState<Cerere>({
     from: "",
     to: "",
@@ -109,9 +112,60 @@ function CerereFlow() {
     return true;
   })();
 
+  const submitCerere = async () => {
+    if (!data.type) return;
+    setSubmitting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.info("Intră în cont ca să trimiți cererea");
+        navigate({ to: "/auth", search: { redirect: "/cerere" } });
+        return;
+      }
+
+      const totalWeight = data.colete.reduce((s, c) => s + c.weightKg, 0);
+      const paxOrWeight =
+        data.type === "colet"
+          ? totalWeight
+          : data.type === "mixt"
+            ? data.adults + data.children
+            : data.adults + data.children;
+
+      const notesPayload = {
+        when: data.when,
+        adults: data.adults,
+        children: data.children,
+        specialNeeds: data.specialNeeds,
+        specialNote: data.specialNote || undefined,
+        colete: data.colete,
+      };
+
+      const { error } = await supabase.from("ride_requests").insert({
+        user_id: user.id,
+        from_address: data.from.trim(),
+        to_address: data.to.trim(),
+        category: data.type,
+        depart_at: null,
+        pax_or_weight: paxOrWeight,
+        price_proposal: estimatePrice(data),
+        notes: JSON.stringify(notesPayload),
+      });
+
+      if (error) throw error;
+
+      toast.success("Cererea a fost trimisă șoferilor!");
+      navigate({ to: "/" });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Eroare la trimitere";
+      toast.error(msg);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const next = () => {
     if (step === 4) {
-      navigate({ to: "/" });
+      void submitCerere();
       return;
     }
     setStep((s) => Math.min(4, s + 1));
@@ -131,9 +185,17 @@ function CerereFlow() {
 
       <Footer
         step={step}
-        canNext={canNext}
+        canNext={canNext && !submitting}
         onNext={next}
-        label={step === 4 ? "Trimite cererea" : step === 3 ? "Continuă" : "Mai departe"}
+        label={
+          step === 4
+            ? submitting
+              ? "Se trimite…"
+              : "Trimite cererea"
+            : step === 3
+              ? "Continuă"
+              : "Mai departe"
+        }
       />
     </main>
   );
