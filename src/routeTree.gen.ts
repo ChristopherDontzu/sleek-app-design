@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TransportatorRouteImport } from './routes/transportator'
 import { Route as SoferRouteImport } from './routes/sofer'
+import { Route as CererileMeleRouteImport } from './routes/cererile-mele'
 import { Route as CerereRouteImport } from './routes/cerere'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -25,6 +26,11 @@ const TransportatorRoute = TransportatorRouteImport.update({
 const SoferRoute = SoferRouteImport.update({
   id: '/sofer',
   path: '/sofer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CererileMeleRoute = CererileMeleRouteImport.update({
+  id: '/cererile-mele',
+  path: '/cererile-mele',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CerereRoute = CerereRouteImport.update({
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cerere': typeof CerereRoute
+  '/cererile-mele': typeof CererileMeleRoute
   '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
   '/admin/users': typeof AdminUsersRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cerere': typeof CerereRoute
+  '/cererile-mele': typeof CererileMeleRoute
   '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
   '/admin/users': typeof AdminUsersRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cerere': typeof CerereRoute
+  '/cererile-mele': typeof CererileMeleRoute
   '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
   '/admin/users': typeof AdminUsersRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cerere'
+    | '/cererile-mele'
     | '/sofer'
     | '/transportator'
     | '/admin/users'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cerere'
+    | '/cererile-mele'
     | '/sofer'
     | '/transportator'
     | '/admin/users'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cerere'
+    | '/cererile-mele'
     | '/sofer'
     | '/transportator'
     | '/admin/users'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   CerereRoute: typeof CerereRoute
+  CererileMeleRoute: typeof CererileMeleRoute
   SoferRoute: typeof SoferRoute
   TransportatorRoute: typeof TransportatorRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/sofer'
       fullPath: '/sofer'
       preLoaderRoute: typeof SoferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cererile-mele': {
+      id: '/cererile-mele'
+      path: '/cererile-mele'
+      fullPath: '/cererile-mele'
+      preLoaderRoute: typeof CererileMeleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cerere': {
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   CerereRoute: CerereRoute,
+  CererileMeleRoute: CererileMeleRoute,
   SoferRoute: SoferRoute,
   TransportatorRoute: TransportatorRoute,
   AdminUsersRoute: AdminUsersRoute,

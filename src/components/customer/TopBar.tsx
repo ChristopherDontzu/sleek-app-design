@@ -1,4 +1,4 @@
-import { Menu, FileText } from "lucide-react";
+import { Menu, FileText, ListChecks } from "lucide-react";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
@@ -34,6 +34,15 @@ export function TopBar() {
           >
             <FileText className="h-4 w-4" />
             Demo
+          </Link>
+          <Link
+            to="/cererile-mele"
+            search={{ tab: "posted" }}
+            aria-label="Demo 2 — Cererile mele"
+            className="flex h-10 items-center gap-1.5 px-3 rounded-full bg-card/90 backdrop-blur-md text-foreground border border-border shadow-[var(--shadow-card)] text-xs font-semibold transition hover:scale-105 active:scale-95"
+          >
+            <ListChecks className="h-4 w-4" />
+            Demo 2
           </Link>
           <ThemeToggle />
         </div>
