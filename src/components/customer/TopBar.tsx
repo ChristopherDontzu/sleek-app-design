@@ -1,5 +1,6 @@
-import { Menu } from "lucide-react";
+import { Menu, FileText } from "lucide-react";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
 import { SideMenu } from "./SideMenu";
 import { useTheme } from "@/hooks/use-theme";
@@ -24,7 +25,18 @@ export function TopBar() {
           <img src={logo} alt="Moldingo" className="h-7 w-7 rounded-full object-contain" />
           <span className="text-sm font-semibold tracking-tight">Moldingo</span>
         </div>
-        <ThemeToggle />
+        <div className="flex items-center gap-2">
+          <Link
+            to="/comanda/$id"
+            params={{ id: "demo" }}
+            aria-label="Demo comandă"
+            className="flex h-10 items-center gap-1.5 px-3 rounded-full bg-card/90 backdrop-blur-md text-foreground border border-border shadow-[var(--shadow-card)] text-xs font-semibold transition hover:scale-105 active:scale-95"
+          >
+            <FileText className="h-4 w-4" />
+            Demo
+          </Link>
+          <ThemeToggle />
+        </div>
       </div>
       <SideMenu open={menuOpen} onOpenChange={setMenuOpen} />
     </>
