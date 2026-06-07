@@ -417,29 +417,30 @@ function Step2Type({
             key={t.id}
             type="button"
             onClick={() => update({ type: t.id })}
-            className={`w-full text-left rounded-2xl border p-4 flex items-center gap-4 cursor-pointer transition ${
+            className={`w-full text-left rounded-2xl border p-4 flex items-center gap-4 cursor-pointer transition active:scale-[0.99] ${
               active
-                ? "border-primary bg-primary/5 shadow-[var(--shadow-card)]"
-                : "border-border bg-card hover:border-primary/40"
+                ? "border-primary/60 bg-primary/[0.04] shadow-[var(--shadow-elegant)]"
+                : "border-border bg-card hover:border-primary/40 hover:shadow-[var(--shadow-card)]"
             }`}
           >
             <div
-              className={`h-12 w-12 rounded-xl flex items-center justify-center shrink-0 ${
-                active ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+              className={`h-14 w-14 rounded-2xl flex items-center justify-center shrink-0 transition ${
+                active ? "text-primary-foreground" : "bg-muted text-foreground"
               }`}
+              style={active ? { background: "var(--gradient-primary)" } : undefined}
             >
               <Icon className="h-6 w-6" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-semibold">{t.title}</div>
-              <div className="text-xs text-muted-foreground">{t.sub}</div>
+              <div className="font-semibold text-[15px]">{t.title}</div>
+              <div className="text-xs text-muted-foreground mt-0.5">{t.sub}</div>
             </div>
             <div
-              className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ${
+              className={`h-6 w-6 rounded-full border-2 flex items-center justify-center transition ${
                 active ? "border-primary bg-primary" : "border-border"
               }`}
             >
-              {active && <Check className="h-3 w-3 text-primary-foreground" />}
+              {active && <Check className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={3} />}
             </div>
           </button>
         );
