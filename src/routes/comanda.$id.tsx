@@ -583,7 +583,7 @@ function ActionsBlock({ stage }: { stage: Stage }) {
         tone="muted"
         icon={Info}
         title="Anulare indisponibilă"
-        sub="Comanda a fost deja preluată și nu mai poate fi anulată. Folosește „Raportează problemă\" după livrare."
+        sub="Comanda a fost deja preluată și nu mai poate fi anulată. Folosește „Raportează problemă” după livrare."
       />
     );
   }
