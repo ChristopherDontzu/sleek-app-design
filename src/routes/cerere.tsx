@@ -856,40 +856,67 @@ function Step4Confirm({ data }: { data: Cerere }) {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground">
-        Verifică detaliile și trimite cererea șoferilor.
-      </p>
-
-      {/* Route */}
-      <section className="rounded-2xl bg-card border border-border p-4">
-        <Label>Rută</Label>
-        <div className="flex items-start gap-3">
-          <div className="pt-1 flex flex-col items-center">
-            <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.72_0.18_145)]" />
-            <span className="w-px flex-1 bg-border my-1" />
-            <span className="h-2.5 w-2.5 rounded-full bg-destructive" />
+      {/* Hero — posted request preview */}
+      <section
+        className="rounded-3xl p-5 text-primary-foreground shadow-[var(--shadow-elegant)] relative overflow-hidden"
+        style={{ background: "var(--gradient-primary)" }}
+      >
+        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
+        <div className="absolute -left-4 -bottom-10 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
+        <div className="relative">
+          <div className="text-[10px] uppercase tracking-[0.16em] opacity-80 font-semibold">
+            Previzualizare cerere
           </div>
-          <div className="flex-1 space-y-3">
-            <div className="text-sm font-medium">{data.from || "—"}</div>
-            <div className="text-sm font-medium">{data.to || "—"}</div>
+          <div className="mt-3 flex items-start gap-3">
+            <div className="pt-1.5 flex flex-col items-center">
+              <span className="h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_0_3px_rgba(255,255,255,0.25)]" />
+              <span className="w-px flex-1 my-1 bg-white/40" style={{ minHeight: 22 }} />
+              <span className="h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_0_3px_rgba(255,255,255,0.25)]" />
+            </div>
+            <div className="flex-1 min-w-0 space-y-2">
+              <div>
+                <div className="text-[10px] uppercase tracking-wider opacity-70">De la</div>
+                <div className="text-[15px] font-semibold truncate">{data.from || "—"}</div>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-wider opacity-70">Către</div>
+                <div className="text-[15px] font-semibold truncate">{data.to || "—"}</div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="mt-3 pt-3 border-t border-border text-xs text-muted-foreground">
-          {data.when === "acum" ? "Plecare cât mai repede" : "Programat"}
+          <div className="mt-4 pt-4 border-t border-white/20 flex items-center justify-between">
+            <div className="text-xs opacity-90">
+              {data.when === "acum" ? "Plecare cât mai repede" : "Programat"}
+            </div>
+            <div className="text-right">
+              <div className="text-[10px] uppercase tracking-wider opacity-70">Buget estimativ</div>
+              <div className="flex items-baseline gap-1 justify-end">
+                <span className="text-2xl font-bold tabular-nums">{estimatePrice(data)}</span>
+                <span className="text-xs opacity-80">MDL</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
+      <p className="text-xs text-muted-foreground px-1">
+        Verifică detaliile și trimite cererea șoferilor.
+      </p>
+
       {/* People */}
       {(data.type === "persoane" || data.type === "mixt") && (
-        <section className="rounded-2xl bg-card border border-border p-4">
-          <Label>Pasageri</Label>
+        <section className="rounded-2xl bg-card border border-border p-4 shadow-[var(--shadow-card)]">
+          <div className="flex items-center justify-between mb-2">
+            <Label className="!mb-0">Pasageri</Label>
+            <span className="text-xs text-muted-foreground">{peopleTotal} total</span>
+          </div>
           <div className="text-sm">
-            <span className="font-semibold">{peopleTotal}</span> total
-            {data.adults > 0 && ` · ${data.adults} adulți`}
-            {data.children > 0 && ` · ${data.children} copii`}
+            {data.adults > 0 && <span className="font-medium">{data.adults} adulți</span>}
+            {data.adults > 0 && data.children > 0 && <span className="text-muted-foreground"> · </span>}
+            {data.children > 0 && <span className="font-medium">{data.children} copii</span>}
           </div>
           {data.specialNeeds && (
-            <div className="mt-2 text-xs rounded-lg bg-primary/10 text-foreground px-2.5 py-1.5 inline-flex items-center gap-1.5">
+            <div className="mt-3 text-xs rounded-lg bg-primary/10 text-foreground px-2.5 py-1.5 inline-flex items-center gap-1.5">
               <Accessibility className="h-3.5 w-3.5" />
               Necesități speciale
             </div>
@@ -902,10 +929,10 @@ function Step4Confirm({ data }: { data: Cerere }) {
 
       {/* Colete */}
       {(data.type === "colet" || data.type === "mixt") && (
-        <section className="rounded-2xl bg-card border border-border p-4 space-y-3">
+        <section className="rounded-2xl bg-card border border-border p-4 space-y-3 shadow-[var(--shadow-card)]">
           <div className="flex items-center justify-between">
             <Label className="!mb-0">Colete</Label>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-muted-foreground tabular-nums">
               {data.colete.length} · ~{totalWeight} kg
             </span>
           </div>
@@ -917,8 +944,8 @@ function Step4Confirm({ data }: { data: Cerere }) {
                 key={c.id}
                 className="flex items-center gap-3 rounded-xl bg-muted/40 p-2.5"
               >
-                <div className="h-9 w-9 rounded-lg bg-card flex items-center justify-center">
-                  <Icon className="h-4 w-4" />
+                <div className="h-10 w-10 rounded-xl bg-card border border-border flex items-center justify-center text-primary">
+                  <Icon className="h-4.5 w-4.5" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium">
@@ -936,19 +963,9 @@ function Step4Confirm({ data }: { data: Cerere }) {
         </section>
       )}
 
-      {/* Price estimate */}
-      <section className="rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 p-4">
-        <Label>Preț estimativ</Label>
-        <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-bold">
-            {estimatePrice(data)}
-          </span>
-          <span className="text-sm text-muted-foreground">MDL</span>
-        </div>
-        <p className="text-[11px] text-muted-foreground mt-1">
-          Șoferii vor putea propune prețul lor.
-        </p>
-      </section>
+      <p className="text-[11px] text-muted-foreground text-center px-4">
+        Șoferii vor putea propune prețul lor după ce trimiți cererea.
+      </p>
     </div>
   );
 }
