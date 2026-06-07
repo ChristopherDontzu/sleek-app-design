@@ -14,6 +14,7 @@ import { Route as SoferRouteImport } from './routes/sofer'
 import { Route as CerereRouteImport } from './routes/cerere'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ComandaIdRouteImport } from './routes/comanda.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 
 const TransportatorRoute = TransportatorRouteImport.update({
@@ -41,6 +42,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComandaIdRoute = ComandaIdRouteImport.update({
+  id: '/comanda/$id',
+  path: '/comanda/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/admin/users',
   path: '/admin/users',
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
   '/admin/users': typeof AdminUsersRoute
+  '/comanda/$id': typeof ComandaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
   '/admin/users': typeof AdminUsersRoute
+  '/comanda/$id': typeof ComandaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/sofer': typeof SoferRoute
   '/transportator': typeof TransportatorRoute
   '/admin/users': typeof AdminUsersRoute
+  '/comanda/$id': typeof ComandaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,8 +90,16 @@ export interface FileRouteTypes {
     | '/sofer'
     | '/transportator'
     | '/admin/users'
+    | '/comanda/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/cerere' | '/sofer' | '/transportator' | '/admin/users'
+  to:
+    | '/'
+    | '/auth'
+    | '/cerere'
+    | '/sofer'
+    | '/transportator'
+    | '/admin/users'
+    | '/comanda/$id'
   id:
     | '__root__'
     | '/'
@@ -91,6 +108,7 @@ export interface FileRouteTypes {
     | '/sofer'
     | '/transportator'
     | '/admin/users'
+    | '/comanda/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -100,6 +118,7 @@ export interface RootRouteChildren {
   SoferRoute: typeof SoferRoute
   TransportatorRoute: typeof TransportatorRoute
   AdminUsersRoute: typeof AdminUsersRoute
+  ComandaIdRoute: typeof ComandaIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -139,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/comanda/$id': {
+      id: '/comanda/$id'
+      path: '/comanda/$id'
+      fullPath: '/comanda/$id'
+      preLoaderRoute: typeof ComandaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/admin/users'
@@ -156,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   SoferRoute: SoferRoute,
   TransportatorRoute: TransportatorRoute,
   AdminUsersRoute: AdminUsersRoute,
+  ComandaIdRoute: ComandaIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
