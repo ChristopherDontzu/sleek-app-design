@@ -1,5 +1,6 @@
-import { Menu } from "lucide-react";
+import { Menu, FileText } from "lucide-react";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
 import { SideMenu } from "./SideMenu";
 import { useTheme } from "@/hooks/use-theme";
