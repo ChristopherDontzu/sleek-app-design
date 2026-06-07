@@ -37,3 +37,8 @@ export function TopBar() {
           </Link>
           <ThemeToggle />
         </div>
+      </div>
+      <SideMenu open={menuOpen} onOpenChange={setMenuOpen} />
+    </>
+  );
+}
