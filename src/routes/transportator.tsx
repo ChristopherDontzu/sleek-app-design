@@ -194,30 +194,64 @@ function TransporterHome() {
 
 function RequestCard({ r, compact = false }: { r: Request; compact?: boolean }) {
   return (
-    <div className={cn("rounded-2xl bg-card", !compact && "border border-border shadow-[var(--shadow-card)] p-4")}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="text-base font-semibold truncate">
-            {r.from} → {r.to}
-          </div>
-          <div className="text-sm text-muted-foreground">{r.type}</div>
-          {r.badge && (
-            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-destructive/10 text-destructive px-2 py-0.5 text-xs font-medium">
-              <Truck className="h-3 w-3" /> {r.badge}
-            </span>
-          )}
-        </div>
-        <span className="shrink-0 rounded-full bg-muted text-muted-foreground px-2.5 py-1 text-xs font-medium">
+    <div
+      className={cn(
+        "group rounded-2xl bg-card transition cursor-pointer",
+        !compact && "border border-border shadow-[var(--shadow-card)] p-4 hover:border-primary/40 hover:-translate-y-px hover:shadow-[var(--shadow-elegant)]",
+        compact && "p-1"
+      )}
+    >
+      {/* Header row: type pill + km */}
+      <div className="flex items-center justify-between gap-2">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide">
+          <Truck className="h-3 w-3" /> {r.type}
+        </span>
+        <span className="shrink-0 rounded-full border border-border text-foreground px-2.5 py-1 text-[11px] font-semibold tabular-nums">
           {r.km} km
         </span>
       </div>
-      <div className="mt-3 flex items-center gap-4 text-sm text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5">
+
+      {/* Route timeline */}
+      <div className="mt-3 flex items-stretch gap-3">
+        <div className="flex flex-col items-center pt-1.5 pb-1">
+          <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.72_0.18_145)] shadow-[0_0_0_3px_color-mix(in_oklab,oklch(0.72_0.18_145)_25%,transparent)]" />
+          <span className="w-px flex-1 my-1 bg-gradient-to-b from-[oklch(0.72_0.18_145)] to-destructive opacity-50" />
+          <span className="h-2.5 w-2.5 rounded-full bg-destructive shadow-[0_0_0_3px_color-mix(in_oklab,var(--destructive)_25%,transparent)]" />
+        </div>
+        <div className="flex-1 min-w-0 flex flex-col justify-between gap-1">
+          <div className="min-w-0">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">De la</div>
+            <div className="text-[14px] font-semibold truncate leading-tight">{r.from}</div>
+          </div>
+          <div className="min-w-0">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Către</div>
+            <div className="text-[14px] font-semibold truncate leading-tight">{r.to}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer: date + offers + badge */}
+      <div className="mt-3 pt-3 border-t border-border flex items-center justify-between gap-2">
+        <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
           <Calendar className="h-3.5 w-3.5" /> {r.date}
         </span>
-        <span className="inline-flex items-center gap-1.5">
-          <Users className="h-3.5 w-3.5" /> {r.offers} oferte
-        </span>
+        <div className="flex items-center gap-2">
+          {r.badge && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-accent/15 text-accent-foreground px-2 py-0.5 text-[11px] font-medium">
+              {r.badge}
+            </span>
+          )}
+          <span
+            className={cn(
+              "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums",
+              r.offers > 0
+                ? "bg-primary/15 text-primary"
+                : "bg-muted text-muted-foreground"
+            )}
+          >
+            <Users className="h-3 w-3" /> {r.offers} {r.offers === 1 ? "ofertă" : "oferte"}
+          </span>
+        </div>
       </div>
     </div>
   );
