@@ -247,31 +247,42 @@ function CerereFlow() {
 function Header({ step, onBack }: { step: number; onBack: () => void }) {
   const titles = ["Rută", "Tip transport", "Detalii", "Confirmă"];
   return (
-    <header className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border">
-      <div className="flex items-center gap-3 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
+    <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl border-b border-border/60">
+      <div className="flex items-center gap-3 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2.5">
         <button
           onClick={onBack}
-          className="h-10 w-10 rounded-full flex items-center justify-center hover:bg-muted cursor-pointer transition"
+          className="h-10 w-10 rounded-full flex items-center justify-center hover:bg-muted cursor-pointer transition active:scale-95"
           aria-label="Înapoi"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <div className="flex-1">
-          <div className="text-[11px] text-muted-foreground font-medium">
-            Pasul {step} din 4
+        <div className="flex-1 min-w-0">
+          <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground font-semibold">
+            Pasul {step} / 4
           </div>
-          <div className="text-base font-semibold">{titles[step - 1]}</div>
+          <div className="text-[17px] font-semibold leading-tight">{titles[step - 1]}</div>
+        </div>
+        <div
+          className="h-10 w-10 rounded-full text-primary-foreground flex items-center justify-center shadow-[var(--shadow-elegant)]"
+          style={{ background: "var(--gradient-primary)" }}
+        >
+          <span className="text-sm font-bold tabular-nums">{step}</span>
         </div>
       </div>
-      <div className="px-3 pb-3 flex gap-1.5">
-        {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className={`flex-1 h-1 rounded-full transition ${
-              i <= step ? "bg-primary" : "bg-muted"
-            }`}
-          />
-        ))}
+      <div className="px-4 pb-3 flex gap-1.5">
+        {[1, 2, 3, 4].map((i) => {
+          const done = i < step;
+          const active = i === step;
+          return (
+            <div
+              key={i}
+              className={`flex-1 h-1.5 rounded-full transition-all ${
+                done ? "bg-primary" : active ? "" : "bg-muted"
+              }`}
+              style={active ? { background: "var(--gradient-primary)" } : undefined}
+            />
+          );
+        })}
       </div>
     </header>
   );
@@ -290,12 +301,13 @@ function Footer({
   label: string;
 }) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t border-border px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/95 to-background/70 backdrop-blur-xl border-t border-border/60 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       <button
         type="button"
         disabled={!canNext}
         onClick={onNext}
-        className="w-full rounded-2xl bg-primary text-primary-foreground py-3.5 text-sm font-semibold shadow-[var(--shadow-elegant)] cursor-pointer hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        style={canNext ? { background: "var(--gradient-primary)" } : undefined}
+        className="w-full rounded-2xl text-primary-foreground py-4 text-[15px] font-semibold shadow-[var(--shadow-elegant)] cursor-pointer hover:opacity-95 hover:-translate-y-px active:translate-y-0 transition disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none flex items-center justify-center gap-2"
       >
         {label}
         {step < 4 && <ChevronRight className="h-4 w-4" />}
