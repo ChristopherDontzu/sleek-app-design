@@ -44,6 +44,24 @@ export function TopBar() {
             <ListChecks className="h-4 w-4" />
             Demo 2
           </Link>
+          <Link
+            to="/transportator/cursele-mele"
+            search={{ tab: "cereri" }}
+            aria-label="Demo 3 — Cursele mele transportator"
+            className="flex h-10 items-center gap-1.5 px-3 rounded-full bg-card/90 backdrop-blur-md text-foreground border border-border shadow-[var(--shadow-card)] text-xs font-semibold transition hover:scale-105 active:scale-95"
+          >
+            <Truck className="h-4 w-4" />
+            Demo 3
+          </Link>
+          <Link
+            to="/transportator/cereri"
+            search={{ tab: "primite" }}
+            aria-label="Demo 4 — Cereri transportator"
+            className="flex h-10 items-center gap-1.5 px-3 rounded-full bg-card/90 backdrop-blur-md text-foreground border border-border shadow-[var(--shadow-card)] text-xs font-semibold transition hover:scale-105 active:scale-95"
+          >
+            <Inbox className="h-4 w-4" />
+            Demo 4
+          </Link>
           <ThemeToggle />
         </div>
       </div>
