@@ -7,7 +7,7 @@ import { Map as MapIcon, List, Calendar, Users, Truck, Home, Briefcase, GitFork,
 import { cn } from "@/lib/utils";
 import { useRole, homeForRole } from "@/hooks/use-role";
 
-export const Route = createFileRoute("/transportator")({
+export const Route = createFileRoute("/transportator/")({
   head: () => ({
     meta: [
       { title: "Moldingo Transportator — Cereri și rute" },
