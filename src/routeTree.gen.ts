@@ -16,6 +16,7 @@ import { Route as CerereRouteImport } from './routes/cerere'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TransportatorCurseleMeleRouteImport } from './routes/transportator.cursele-mele'
+import { Route as TransportatorCereriRouteImport } from './routes/transportator.cereri'
 import { Route as ComandaIdRouteImport } from './routes/comanda.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 
@@ -55,6 +56,11 @@ const TransportatorCurseleMeleRoute =
     path: '/cursele-mele',
     getParentRoute: () => TransportatorRoute,
   } as any)
+const TransportatorCereriRoute = TransportatorCereriRouteImport.update({
+  id: '/cereri',
+  path: '/cereri',
+  getParentRoute: () => TransportatorRoute,
+} as any)
 const ComandaIdRoute = ComandaIdRouteImport.update({
   id: '/comanda/$id',
   path: '/comanda/$id',
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/transportator': typeof TransportatorRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/comanda/$id': typeof ComandaIdRoute
+  '/transportator/cereri': typeof TransportatorCereriRoute
   '/transportator/cursele-mele': typeof TransportatorCurseleMeleRoute
 }
 export interface FileRoutesByTo {
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/transportator': typeof TransportatorRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/comanda/$id': typeof ComandaIdRoute
+  '/transportator/cereri': typeof TransportatorCereriRoute
   '/transportator/cursele-mele': typeof TransportatorCurseleMeleRoute
 }
 export interface FileRoutesById {
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/transportator': typeof TransportatorRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/comanda/$id': typeof ComandaIdRoute
+  '/transportator/cereri': typeof TransportatorCereriRoute
   '/transportator/cursele-mele': typeof TransportatorCurseleMeleRoute
 }
 export interface FileRouteTypes {
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/transportator'
     | '/admin/users'
     | '/comanda/$id'
+    | '/transportator/cereri'
     | '/transportator/cursele-mele'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/transportator'
     | '/admin/users'
     | '/comanda/$id'
+    | '/transportator/cereri'
     | '/transportator/cursele-mele'
   id:
     | '__root__'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/transportator'
     | '/admin/users'
     | '/comanda/$id'
+    | '/transportator/cereri'
     | '/transportator/cursele-mele'
   fileRoutesById: FileRoutesById
 }
@@ -198,6 +210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TransportatorCurseleMeleRouteImport
       parentRoute: typeof TransportatorRoute
     }
+    '/transportator/cereri': {
+      id: '/transportator/cereri'
+      path: '/cereri'
+      fullPath: '/transportator/cereri'
+      preLoaderRoute: typeof TransportatorCereriRouteImport
+      parentRoute: typeof TransportatorRoute
+    }
     '/comanda/$id': {
       id: '/comanda/$id'
       path: '/comanda/$id'
@@ -216,10 +235,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface TransportatorRouteChildren {
+  TransportatorCereriRoute: typeof TransportatorCereriRoute
   TransportatorCurseleMeleRoute: typeof TransportatorCurseleMeleRoute
 }
 
 const TransportatorRouteChildren: TransportatorRouteChildren = {
+  TransportatorCereriRoute: TransportatorCereriRoute,
   TransportatorCurseleMeleRoute: TransportatorCurseleMeleRoute,
 }
 
