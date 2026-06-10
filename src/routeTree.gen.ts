@@ -52,14 +52,14 @@ const TransportatorIndexRoute = TransportatorIndexRouteImport.update({
 } as any)
 const TransportatorCurseleMeleRoute =
   TransportatorCurseleMeleRouteImport.update({
-    id: '/cursele-mele',
-    path: '/cursele-mele',
-    getParentRoute: () => TransportatorRoute,
+    id: '/transportator/cursele-mele',
+    path: '/transportator/cursele-mele',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const TransportatorCereriRoute = TransportatorCereriRouteImport.update({
-  id: '/cereri',
-  path: '/cereri',
-  getParentRoute: () => TransportatorRoute,
+  id: '/transportator/cereri',
+  path: '/transportator/cereri',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ComandaIdRoute = ComandaIdRouteImport.update({
   id: '/comanda/$id',
@@ -156,6 +156,8 @@ export interface RootRouteChildren {
   SoferRoute: typeof SoferRoute
   AdminUsersRoute: typeof AdminUsersRoute
   ComandaIdRoute: typeof ComandaIdRoute
+  TransportatorCereriRoute: typeof TransportatorCereriRoute
+  TransportatorCurseleMeleRoute: typeof TransportatorCurseleMeleRoute
   TransportatorIndexRoute: typeof TransportatorIndexRoute
 }
 
@@ -205,17 +207,17 @@ declare module '@tanstack/react-router' {
     }
     '/transportator/cursele-mele': {
       id: '/transportator/cursele-mele'
-      path: '/cursele-mele'
+      path: '/transportator/cursele-mele'
       fullPath: '/transportator/cursele-mele'
       preLoaderRoute: typeof TransportatorCurseleMeleRouteImport
-      parentRoute: typeof TransportatorRoute
+      parentRoute: typeof rootRouteImport
     }
     '/transportator/cereri': {
       id: '/transportator/cereri'
-      path: '/cereri'
+      path: '/transportator/cereri'
       fullPath: '/transportator/cereri'
       preLoaderRoute: typeof TransportatorCereriRouteImport
-      parentRoute: typeof TransportatorRoute
+      parentRoute: typeof rootRouteImport
     }
     '/comanda/$id': {
       id: '/comanda/$id'
@@ -242,6 +244,8 @@ const rootRouteChildren: RootRouteChildren = {
   SoferRoute: SoferRoute,
   AdminUsersRoute: AdminUsersRoute,
   ComandaIdRoute: ComandaIdRoute,
+  TransportatorCereriRoute: TransportatorCereriRoute,
+  TransportatorCurseleMeleRoute: TransportatorCurseleMeleRoute,
   TransportatorIndexRoute: TransportatorIndexRoute,
 }
 export const routeTree = rootRouteImport
