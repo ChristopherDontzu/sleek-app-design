@@ -15,6 +15,7 @@ import { Route as CererileMeleRouteImport } from './routes/cererile-mele'
 import { Route as CerereRouteImport } from './routes/cerere'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TransportatorCurseleMeleRouteImport } from './routes/transportator.cursele-mele'
 import { Route as ComandaIdRouteImport } from './routes/comanda.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 
@@ -48,6 +49,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TransportatorCurseleMeleRoute =
+  TransportatorCurseleMeleRouteImport.update({
+    id: '/cursele-mele',
+    path: '/cursele-mele',
+    getParentRoute: () => TransportatorRoute,
+  } as any)
 const ComandaIdRoute = ComandaIdRouteImport.update({
   id: '/comanda/$id',
   path: '/comanda/$id',
@@ -65,9 +72,10 @@ export interface FileRoutesByFullPath {
   '/cerere': typeof CerereRoute
   '/cererile-mele': typeof CererileMeleRoute
   '/sofer': typeof SoferRoute
-  '/transportator': typeof TransportatorRoute
+  '/transportator': typeof TransportatorRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/comanda/$id': typeof ComandaIdRoute
+  '/transportator/cursele-mele': typeof TransportatorCurseleMeleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,9 +83,10 @@ export interface FileRoutesByTo {
   '/cerere': typeof CerereRoute
   '/cererile-mele': typeof CererileMeleRoute
   '/sofer': typeof SoferRoute
-  '/transportator': typeof TransportatorRoute
+  '/transportator': typeof TransportatorRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/comanda/$id': typeof ComandaIdRoute
+  '/transportator/cursele-mele': typeof TransportatorCurseleMeleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,9 +95,10 @@ export interface FileRoutesById {
   '/cerere': typeof CerereRoute
   '/cererile-mele': typeof CererileMeleRoute
   '/sofer': typeof SoferRoute
-  '/transportator': typeof TransportatorRoute
+  '/transportator': typeof TransportatorRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/comanda/$id': typeof ComandaIdRoute
+  '/transportator/cursele-mele': typeof TransportatorCurseleMeleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +111,7 @@ export interface FileRouteTypes {
     | '/transportator'
     | '/admin/users'
     | '/comanda/$id'
+    | '/transportator/cursele-mele'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +122,7 @@ export interface FileRouteTypes {
     | '/transportator'
     | '/admin/users'
     | '/comanda/$id'
+    | '/transportator/cursele-mele'
   id:
     | '__root__'
     | '/'
@@ -121,6 +133,7 @@ export interface FileRouteTypes {
     | '/transportator'
     | '/admin/users'
     | '/comanda/$id'
+    | '/transportator/cursele-mele'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -129,7 +142,7 @@ export interface RootRouteChildren {
   CerereRoute: typeof CerereRoute
   CererileMeleRoute: typeof CererileMeleRoute
   SoferRoute: typeof SoferRoute
-  TransportatorRoute: typeof TransportatorRoute
+  TransportatorRoute: typeof TransportatorRouteWithChildren
   AdminUsersRoute: typeof AdminUsersRoute
   ComandaIdRoute: typeof ComandaIdRoute
 }
@@ -178,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/transportator/cursele-mele': {
+      id: '/transportator/cursele-mele'
+      path: '/cursele-mele'
+      fullPath: '/transportator/cursele-mele'
+      preLoaderRoute: typeof TransportatorCurseleMeleRouteImport
+      parentRoute: typeof TransportatorRoute
+    }
     '/comanda/$id': {
       id: '/comanda/$id'
       path: '/comanda/$id'
@@ -195,13 +215,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface TransportatorRouteChildren {
+  TransportatorCurseleMeleRoute: typeof TransportatorCurseleMeleRoute
+}
+
+const TransportatorRouteChildren: TransportatorRouteChildren = {
+  TransportatorCurseleMeleRoute: TransportatorCurseleMeleRoute,
+}
+
+const TransportatorRouteWithChildren = TransportatorRoute._addFileChildren(
+  TransportatorRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   CerereRoute: CerereRoute,
   CererileMeleRoute: CererileMeleRoute,
   SoferRoute: SoferRoute,
-  TransportatorRoute: TransportatorRoute,
+  TransportatorRoute: TransportatorRouteWithChildren,
   AdminUsersRoute: AdminUsersRoute,
   ComandaIdRoute: ComandaIdRoute,
 }
