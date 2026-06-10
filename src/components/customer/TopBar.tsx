@@ -1,4 +1,4 @@
-import { Menu, FileText, ListChecks } from "lucide-react";
+import { Menu, FileText, ListChecks, Truck, Inbox } from "lucide-react";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ThemeToggle } from "./ThemeToggle";
