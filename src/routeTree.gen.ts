@@ -9,22 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TransportatorRouteImport } from './routes/transportator'
 import { Route as SoferRouteImport } from './routes/sofer'
 import { Route as CererileMeleRouteImport } from './routes/cererile-mele'
 import { Route as CerereRouteImport } from './routes/cerere'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TransportatorIndexRouteImport } from './routes/transportator.index'
 import { Route as TransportatorCurseleMeleRouteImport } from './routes/transportator.cursele-mele'
 import { Route as TransportatorCereriRouteImport } from './routes/transportator.cereri'
 import { Route as ComandaIdRouteImport } from './routes/comanda.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 
-const TransportatorRoute = TransportatorRouteImport.update({
-  id: '/transportator',
-  path: '/transportator',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SoferRoute = SoferRouteImport.update({
   id: '/sofer',
   path: '/sofer',
@@ -48,6 +43,11 @@ const AuthRoute = AuthRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransportatorIndexRoute = TransportatorIndexRouteImport.update({
+  id: '/transportator/',
+  path: '/transportator/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TransportatorCurseleMeleRoute =
@@ -78,11 +78,11 @@ export interface FileRoutesByFullPath {
   '/cerere': typeof CerereRoute
   '/cererile-mele': typeof CererileMeleRoute
   '/sofer': typeof SoferRoute
-  '/transportator': typeof TransportatorRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/comanda/$id': typeof ComandaIdRoute
   '/transportator/cereri': typeof TransportatorCereriRoute
   '/transportator/cursele-mele': typeof TransportatorCurseleMeleRoute
+  '/transportator/': typeof TransportatorIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -90,11 +90,11 @@ export interface FileRoutesByTo {
   '/cerere': typeof CerereRoute
   '/cererile-mele': typeof CererileMeleRoute
   '/sofer': typeof SoferRoute
-  '/transportator': typeof TransportatorRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/comanda/$id': typeof ComandaIdRoute
   '/transportator/cereri': typeof TransportatorCereriRoute
   '/transportator/cursele-mele': typeof TransportatorCurseleMeleRoute
+  '/transportator': typeof TransportatorIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -103,11 +103,11 @@ export interface FileRoutesById {
   '/cerere': typeof CerereRoute
   '/cererile-mele': typeof CererileMeleRoute
   '/sofer': typeof SoferRoute
-  '/transportator': typeof TransportatorRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/comanda/$id': typeof ComandaIdRoute
   '/transportator/cereri': typeof TransportatorCereriRoute
   '/transportator/cursele-mele': typeof TransportatorCurseleMeleRoute
+  '/transportator/': typeof TransportatorIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,11 +117,11 @@ export interface FileRouteTypes {
     | '/cerere'
     | '/cererile-mele'
     | '/sofer'
-    | '/transportator'
     | '/admin/users'
     | '/comanda/$id'
     | '/transportator/cereri'
     | '/transportator/cursele-mele'
+    | '/transportator/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -129,11 +129,11 @@ export interface FileRouteTypes {
     | '/cerere'
     | '/cererile-mele'
     | '/sofer'
-    | '/transportator'
     | '/admin/users'
     | '/comanda/$id'
     | '/transportator/cereri'
     | '/transportator/cursele-mele'
+    | '/transportator'
   id:
     | '__root__'
     | '/'
@@ -141,11 +141,11 @@ export interface FileRouteTypes {
     | '/cerere'
     | '/cererile-mele'
     | '/sofer'
-    | '/transportator'
     | '/admin/users'
     | '/comanda/$id'
     | '/transportator/cereri'
     | '/transportator/cursele-mele'
+    | '/transportator/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -154,20 +154,13 @@ export interface RootRouteChildren {
   CerereRoute: typeof CerereRoute
   CererileMeleRoute: typeof CererileMeleRoute
   SoferRoute: typeof SoferRoute
-  TransportatorRoute: typeof TransportatorRouteWithChildren
   AdminUsersRoute: typeof AdminUsersRoute
   ComandaIdRoute: typeof ComandaIdRoute
+  TransportatorIndexRoute: typeof TransportatorIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/transportator': {
-      id: '/transportator'
-      path: '/transportator'
-      fullPath: '/transportator'
-      preLoaderRoute: typeof TransportatorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sofer': {
       id: '/sofer'
       path: '/sofer'
@@ -203,6 +196,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/transportator/': {
+      id: '/transportator/'
+      path: '/transportator'
+      fullPath: '/transportator/'
+      preLoaderRoute: typeof TransportatorIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transportator/cursele-mele': {
       id: '/transportator/cursele-mele'
       path: '/cursele-mele'
@@ -234,30 +234,26 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface TransportatorRouteChildren {
-  TransportatorCereriRoute: typeof TransportatorCereriRoute
-  TransportatorCurseleMeleRoute: typeof TransportatorCurseleMeleRoute
-}
-
-const TransportatorRouteChildren: TransportatorRouteChildren = {
-  TransportatorCereriRoute: TransportatorCereriRoute,
-  TransportatorCurseleMeleRoute: TransportatorCurseleMeleRoute,
-}
-
-const TransportatorRouteWithChildren = TransportatorRoute._addFileChildren(
-  TransportatorRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   CerereRoute: CerereRoute,
   CererileMeleRoute: CererileMeleRoute,
   SoferRoute: SoferRoute,
-  TransportatorRoute: TransportatorRouteWithChildren,
   AdminUsersRoute: AdminUsersRoute,
   ComandaIdRoute: ComandaIdRoute,
+  TransportatorIndexRoute: TransportatorIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
